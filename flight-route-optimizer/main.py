@@ -9,12 +9,12 @@ parser = argparse.ArgumentParser(description="Find shortest flight route between
 # This means the user must supply an airport code (e.g., BWI) as the first argument
 # type=str ensures the input is treated as a string
 # help gives a short explanation that will show when the user asks for help
-parser.add_argument("origin", type=str, help=" airport code (e.g., BWI)")
+parser.add_argument("origin", type=str, help=" airport code (e.g., JFK)")
 
 # Defining the second positional argument: 'destination'
 # This argument will come second in the command-line input
 # Also enforced as a string, and help gives an example for clarity
-parser.add_argument("destination", type=str, help="Destination airport code(e.g., HOU)")
+parser.add_argument("destination", type=str, help="Destination airport code(e.g., LAX)")
 
 # Parsing the arguments passed by the user and store them in the 'args' variable
 # For example, if the user runs `python main.py BWI HOU`, then:
@@ -25,3 +25,19 @@ args = parser.parse_args()
 # Output the origin and destination provided by the user, using f-string formatting
 # This is helpful for confirming that the inputs were received and understood correctly
 print(f"Searching route from {args.origin} to {args.destination}")
+
+
+# Importing the Graph class from the graph module
+from graph import Graph
+
+# Creating an instance of the Graph class
+graph = Graph()
+# Loading the routes from a CSV file into the graph instance
+graph.load_from_csv("data/routes.csv")
+
+# Printing the available routes in the graph
+print("Available routes")
+# Printing the routes in a formatted way for readability
+print(graph.routes)
+
+
