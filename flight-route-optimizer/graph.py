@@ -1,4 +1,6 @@
 import csv
+import heapq
+
 
 class Graph:
     def __init__(self):
@@ -15,3 +17,20 @@ class Graph:
             for row in reader:
                 origin, destination, distance = row
                 self.add_edge(origin, destination, distance)
+
+
+    def shortest_path(self, start, end):
+        queue = [(0, start, [])]
+        seen = set()
+
+        while queue:
+            (cost, node, path) = heapq.heappop(queue)
+            if node in seen:
+                continue
+            seen.add(node)
+            path = path + [node]
+            if node == end:
+                return (cost, path)
+            for neighbor, weight in self.routes.get(node, {}).items():
+                heapq.heappush(queue, (cost + weight, neighbor, path))
+        return (float("inf"), [])

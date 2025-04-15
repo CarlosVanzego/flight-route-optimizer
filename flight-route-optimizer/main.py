@@ -1,5 +1,7 @@
 # I am importing the argparse module, which allows me to handle command-line arguments in a clean and user-friendly way
 import argparse 
+# Importing the Graph class from the graph module
+from graph import Graph
 
 # Creating an ArgumentParser object that will hold the logic for parsing command-line arguments
 # The 'description' parameter provides a helpful summary that will show up when the user runs the script with --help
@@ -26,18 +28,20 @@ args = parser.parse_args()
 # This is helpful for confirming that the inputs were received and understood correctly
 print(f"Searching route from {args.origin} to {args.destination}")
 
-
-# Importing the Graph class from the graph module
-from graph import Graph
-
 # Creating an instance of the Graph class
 graph = Graph()
 # Loading the routes from a CSV file into the graph instance
 graph.load_from_csv("data/routes.csv")
 
-# Printing the available routes in the graph
-print("Available routes")
-# Printing the routes in a formatted way for readability
-print(graph.routes)
+# Calling the shortest_path method on the graph instance to find the shortest route from the origin to the destination
+cost, path = graph.shortest_path(args.origin, args.destination)
+
+# If statement to check if the cost is infinite, meaning no route was found
+if cost == float("inf"):
+  # Printing a message indicating that no route was found
+  print("No route found")
+# If a route was found, this will print the shortest route and its cost. 
+else:
+  print(f"Shortest route: {' -> '.join(path)} (Distance: {cost} miles)")
 
 
