@@ -2,7 +2,7 @@ import csv
 import heapq  # Priority queue for Dijkstra's algorithm
 
 # Custom class to represent flight routes between airports
-class FlightGraph:
+class Graph:
     def __init__(self):
         self.routes = {}  # Dictionary of airports and their destination connections
 
@@ -28,7 +28,7 @@ class FlightGraph:
                         continue
 
                     origin = origin.strip().upper()
-                    destinatinon = destination.strip().upper()
+                    destination = destination.strip().upper()
 
                     # add bidirectional routes
                     self.add_edge(origin, destination, distance)
@@ -39,7 +39,7 @@ class FlightGraph:
             exit(1)
 
     def shortest_path(self, origin, destination):
-        # Dijkstra's algorithm for shortest path
+    # Dijkstra's algorithm for shortest path
         distances = {airport: float("inf") for airport in self.routes}
         previous_nodes = {airport: None for airport in self.routes}
         distances[origin] = 0
@@ -52,14 +52,14 @@ class FlightGraph:
             if current_node == destination:
                 break
 
-        for neighbor, weight in self.routes.get(current_node, {}).items():
-                distance = current_distance + weight
-                if distance < distance[neighbor]:
-                    distances[neighbor] = distance
+            for neighbor, weight in self.routes.get(current_node, {}).items():
+                new_distance = current_distance + weight  # Calculate new distance
+                if new_distance < distances[neighbor]:  # Correct comparison
+                    distances[neighbor] = new_distance
                     previous_nodes[neighbor] = current_node
-                    heapq.heappush(queue, (distance, neighbor))
+                    heapq.heappush(queue, (new_distance, neighbor))
 
-        #  Reconstruct path
+        # Reconstruct path
         path = []
         current = destination
         while current is not None:
@@ -69,7 +69,7 @@ class FlightGraph:
         if distances[destination] == float("inf"):
             return float("inf"), []
 
-        return distances[destination], path    
+        return distances[destination], path   
 
 
     

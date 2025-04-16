@@ -12,7 +12,7 @@ args = parser.parse_args()
 
 # Initialize graph and load routes
 graph = Graph()
-graph.load_from_csv("routes.csv")
+graph.load_from_csv("data/routes.csv")
 
 # Create a combined list of all valid airport codes
 all_airports = set(graph.routes.keys())
