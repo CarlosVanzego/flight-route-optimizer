@@ -1,4 +1,56 @@
-# # I am importing the csv module, which is used to read and write CSV files in Python
+import csv
+import heapq  # Priority queue for Dijkstra's algorithm
+
+# Custom class to represent flight routes between airports
+class Graph:
+    def __init__(self):
+        self.routes = {}  # Dictionary of airports and their destination connections
+
+    def add_edge(self, origin, destination, distance):
+        # Add one-way route from origin to destination
+        if origin not in self.routes:
+            self.routes[origin] = {}
+        self.routes[origin][destination] = int(distance)
+
+    def load_from_csv(self, filename):
+        try:
+            with open(filename, newline='') as csvfile:
+                reader = csv.reader(csvfile)
+                for row in reader:
+                    if len(row) != 3:
+                        print(f"⚠️ Skipping invalid row: {row}")
+                        continue
+                    origin, destination, distance = row
+                    self.add_edge(origin.strip().upper(), destination.strip().upper(), distance)
+        except FileNotFoundError:
+            print(f"❌ Error: File '{filename}' not found.")
+            exit(1)
+
+    def shortest_path(self, start, end):
+        # Dijkstra's algorithm for shortest path
+        queue = [(0, start, [])]  # (cost_so_far, current_node, path_so_far)
+        seen = set()
+
+        while queue:
+            (cost, node, path) = heapq.heappop(queue)
+
+            if node in seen:
+                continue
+
+            seen.add(node)
+            path = path + [node]
+
+            if node == end:
+                return (cost, path)
+
+            for neighbor, weight in self.routes.get(node, {}).items():
+                heapq.heappush(queue, (cost + weight, neighbor, path))
+
+        return (float("inf"), [])  # No path found
+    
+
+
+    # # I am importing the csv module, which is used to read and write CSV files in Python
 # import csv
 # # I am then printing heapq, which is a module that provides an implementation of the heap queue algorithm, also know as the priority queue
 # import heapq
@@ -54,54 +106,3 @@
 #             for neighbor, weight in self.routes.get(node, {}).items():
 #                 heapq.heappush(queue, (cost + weight, neighbor, path))
 #         return (float("inf"), [])
-
-
-import csv
-import heapq  # Priority queue for Dijkstra's algorithm
-
-# Custom class to represent flight routes between airports
-class Graph:
-    def __init__(self):
-        self.routes = {}  # Dictionary of airports and their destination connections
-
-    def add_edge(self, origin, destination, distance):
-        # Add one-way route from origin to destination
-        if origin not in self.routes:
-            self.routes[origin] = {}
-        self.routes[origin][destination] = int(distance)
-
-    def load_from_csv(self, filename):
-        try:
-            with open(filename, newline='') as csvfile:
-                reader = csv.reader(csvfile)
-                for row in reader:
-                    if len(row) != 3:
-                        print(f"⚠️ Skipping invalid row: {row}")
-                        continue
-                    origin, destination, distance = row
-                    self.add_edge(origin.strip().upper(), destination.strip().upper(), distance)
-        except FileNotFoundError:
-            print(f"❌ Error: File '{filename}' not found.")
-            exit(1)
-
-    def shortest_path(self, start, end):
-        # Dijkstra's algorithm for shortest path
-        queue = [(0, start, [])]  # (cost_so_far, current_node, path_so_far)
-        seen = set()
-
-        while queue:
-            (cost, node, path) = heapq.heappop(queue)
-
-            if node in seen:
-                continue
-
-            seen.add(node)
-            path = path + [node]
-
-            if node == end:
-                return (cost, path)
-
-            for neighbor, weight in self.routes.get(node, {}).items():
-                heapq.heappush(queue, (cost + weight, neighbor, path))
-
-        return (float("inf"), [])  # No path found

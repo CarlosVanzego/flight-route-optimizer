@@ -1,4 +1,44 @@
-# # I am importing the argparse module, which allows me to handle command-line arguments in a clean and user-friendly way
+import argparse
+from graph import Graph
+
+# Create the CLI parser
+parser = argparse.ArgumentParser(description="Find shortest flight route between two airports.")
+parser.add_argument("origin", type=str, help="Origin airport code (e.g., BWI)")
+parser.add_argument("destination", type=str, help="Destination airport code (e.g., HOU)")
+parser.add_argument("--file", type=str, default="routes.csv", help="Path to route CSV file (default: routes.csv)")
+args = parser.parse_args()
+
+# Convert airport codes to uppercase for consistency
+args.origin = args.origin.upper()
+args.destination = args.destination.upper()
+
+# Initialize graph and load routes
+graph = Graph()
+graph.load_from_csv(args.file)
+
+# Validate that the input airports exist in the graph
+if args.origin not in graph.routes:
+    print(f"❌ Origin airport code '{args.origin}' not found in the route data.")
+    exit(1)
+
+all_destinations = {dest for dests in graph.routes.values() for dest in dests}
+if args.destination not in all_destinations:
+    print(f"❌ Destination airport code '{args.destination}' not found in the route data.")
+    exit(1)
+
+# Run shortest path search
+cost, path = graph.shortest_path(args.origin, args.destination)
+
+if cost == float("inf"):
+    print("🚫 No route found between the specified airports.")
+else:
+    print("\n✅ Shortest Route Found:")
+    print(f"🛫  Route: {' → '.join(path)}")
+    print(f"📏  Total Distance: {cost} miles")
+
+
+
+    # # I am importing the argparse module, which allows me to handle command-line arguments in a clean and user-friendly way
 # import argparse 
 # # Importing the Graph class from the graph module
 # from graph import Graph
@@ -62,42 +102,3 @@
 #   print("\n✅ Shortest Route Found:")
 #   print(f"🛫 Route: {' -> '.join(path)}")
 #   print(f"📏 Total Distance: {cost} miles")
-
-
-import argparse
-from graph import Graph
-
-# Create the CLI parser
-parser = argparse.ArgumentParser(description="Find shortest flight route between two airports.")
-parser.add_argument("origin", type=str, help="Origin airport code (e.g., BWI)")
-parser.add_argument("destination", type=str, help="Destination airport code (e.g., HOU)")
-parser.add_argument("--file", type=str, default="routes.csv", help="Path to route CSV file (default: routes.csv)")
-args = parser.parse_args()
-
-# Convert airport codes to uppercase for consistency
-args.origin = args.origin.upper()
-args.destination = args.destination.upper()
-
-# Initialize graph and load routes
-graph = Graph()
-graph.load_from_csv(args.file)
-
-# Validate that the input airports exist in the graph
-if args.origin not in graph.routes:
-    print(f"❌ Origin airport code '{args.origin}' not found in the route data.")
-    exit(1)
-
-all_destinations = {dest for dests in graph.routes.values() for dest in dests}
-if args.destination not in all_destinations:
-    print(f"❌ Destination airport code '{args.destination}' not found in the route data.")
-    exit(1)
-
-# Run shortest path search
-cost, path = graph.shortest_path(args.origin, args.destination)
-
-if cost == float("inf"):
-    print("🚫 No route found between the specified airports.")
-else:
-    print("\n✅ Shortest Route Found:")
-    print(f"🛫  Route: {' → '.join(path)}")
-    print(f"📏  Total Distance: {cost} miles")
