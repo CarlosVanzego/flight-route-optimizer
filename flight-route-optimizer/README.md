@@ -1,18 +1,24 @@
-# ✈️ Flight Route Finder CLI
+# ✈️ Flight Route Optimizer CLI
 
-A Python-based Command Line Interface (CLI) tool that helps users find the shortest flight route between two airports using real-world route data and Dijkstra's algorithm.
-
----
-
-## 🚀 Features
-
-- Load flight route data from a `.csv` file
-- Calculate the shortest route using Dijkstra’s algorithm
-- Displays total distance and route between two airports
-- Command line interface for flexible use
-- Validates airport codes before processing
-- Includes customizable route file support
+A command-line Python application that calculates the shortest flight route between two airports using Dijkstra's algorithm.
 
 ---
 
-## 📁 Project Structure
+## 📌 Purpose
+
+This project was built to help users find the shortest route between two airports based on a dataset of available flights.  
+It simulates how airlines or travel apps might optimize travel routes behind the scenes, and it helped me reinforce concepts like:
+
+- Graph data structures  
+- Dijkstra's algorithm  
+- Python file I/O and CSV handling  
+- Command-line interfaces using `argparse`
+
+---
+
+## 🚀 How to Run
+
+1. **Clone this repository**  
+   ```bash
+   git clone https://github.com/your-username/flight-route-optimizer.git
+   cd flight-route-optimizer

@@ -2,7 +2,7 @@ import csv
 import heapq  # Priority queue for Dijkstra's algorithm
 
 # Custom class to represent flight routes between airports
-class Graph:
+class FlightGraph:
     def __init__(self):
         self.routes = {}  # Dictionary of airports and their destination connections
 
@@ -21,32 +21,57 @@ class Graph:
                         print(f"⚠️ Skipping invalid row: {row}")
                         continue
                     origin, destination, distance = row
-                    self.add_edge(origin.strip().upper(), destination.strip().upper(), distance)
+                    try:
+                        distance = int(distance)
+                    except ValueError:
+                        print(f"⚠️ Invalid distane value in row: {row}")
+                        continue
+
+                    origin = origin.strip().upper()
+                    destinatinon = destination.strip().upper()
+
+                    # add bidirectional routes
+                    self.add_edge(origin, destination, distance)
+                    self.add_edge(destination, origin, distance)
+
         except FileNotFoundError:
             print(f"❌ Error: File '{filename}' not found.")
             exit(1)
 
-    def shortest_path(self, start, end):
+    def shortest_path(self, origin, destination):
         # Dijkstra's algorithm for shortest path
-        queue = [(0, start, [])]  # (cost_so_far, current_node, path_so_far)
-        seen = set()
+        distances = {airport: float("inf") for airport in self.routes}
+        previous_nodes = {airport: None for airport in self.routes}
+        distances[origin] = 0
+
+        queue = [(0, origin)]
 
         while queue:
-            (cost, node, path) = heapq.heappop(queue)
+            current_distance, current_node = heapq.heappop(queue)
 
-            if node in seen:
-                continue
+            if current_node == destination:
+                break
 
-            seen.add(node)
-            path = path + [node]
+        for neighbor, weight in self.routes.get(current_node, {}).items():
+                distance = current_distance + weight
+                if distance < distance[neighbor]:
+                    distances[neighbor] = distance
+                    previous_nodes[neighbor] = current_node
+                    heapq.heappush(queue, (distance, neighbor))
 
-            if node == end:
-                return (cost, path)
+        #  Reconstruct path
+        path = []
+        current = destination
+        while current is not None:
+            path.insert(0, current)
+            current = previous_nodes[current]
 
-            for neighbor, weight in self.routes.get(node, {}).items():
-                heapq.heappush(queue, (cost + weight, neighbor, path))
+        if distances[destination] == float("inf"):
+            return float("inf"), []
 
-        return (float("inf"), [])  # No path found
+        return distances[destination], path    
+
+
     
 
 

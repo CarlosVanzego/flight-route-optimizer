@@ -5,36 +5,49 @@ from graph import Graph
 parser = argparse.ArgumentParser(description="Find shortest flight route between two airports.")
 parser.add_argument("origin", type=str, help="Origin airport code (e.g., BWI)")
 parser.add_argument("destination", type=str, help="Destination airport code (e.g., HOU)")
-parser.add_argument("--file", type=str, default="routes.csv", help="Path to route CSV file (default: routes.csv)")
-args = parser.parse_args()
+parser.add_argument("--debug", action="store_true", help="Show route graph data for debugging")
 
-# Convert airport codes to uppercase for consistency
-args.origin = args.origin.upper()
-args.destination = args.destination.upper()
+# Parse command-line arguments
+args = parser.parse_args()
 
 # Initialize graph and load routes
 graph = Graph()
-graph.load_from_csv(args.file)
+graph.load_from_csv("routes.csv")
 
-# Validate that the input airports exist in the graph
-if args.origin not in graph.routes:
-    print(f"❌ Origin airport code '{args.origin}' not found in the route data.")
+# Create a combined list of all valid airport codes
+all_airports = set(graph.routes.keys())
+for neighbors in graph.routes.values():
+    all_airports.update(neighbors.keys())
+
+# Validate origin and destination
+if args.origin not in all_airports:
+    print(f"❌ Error: Origin airport code '{args.origin}' not found in the route data.")
     exit(1)
 
-all_destinations = {dest for dests in graph.routes.values() for dest in dests}
-if args.destination not in all_destinations:
-    print(f"❌ Destination airport code '{args.destination}' not found in the route data.")
+if args.destination not in all_airports:
+    print(f"❌ Error: Destination airport code '{args.destination}' not found in the route data.")
     exit(1)
+
+# Optional debugging output
+if args.debug:
+    print("\n🔧 DEBUG: Loaded Routes:")
+    for origin, destinations in graph.routes.items():
+        for dest, dist in destinations.items():
+            print(f"  {origin} -> {dest} ({dist} miles)")
+
+# Inform the user about the search
+print(f"\n🧭 Searching route from 🛫 {args.origin} to 🛬{args.destination}...\n")
 
 # Run shortest path search
 cost, path = graph.shortest_path(args.origin, args.destination)
 
+# Display the result
 if cost == float("inf"):
     print("🚫 No route found between the specified airports.")
 else:
     print("\n✅ Shortest Route Found:")
-    print(f"🛫  Route: {' → '.join(path)}")
-    print(f"📏  Total Distance: {cost} miles")
+    print(f"  🛫  Route: {' → '.join(path)}")
+    print(f"  📏  Total Distance: {cost} miles")
 
 
 
