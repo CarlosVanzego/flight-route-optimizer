@@ -2,7 +2,7 @@
 import csv
 # Then I'm importing heapq, which is a module that provides an implementation of the heap queue algorithm, also known as the priority queue
 # This module is used in Dijkstra's algorithm to efficiently find the shortest path in a graph
-import heapq  # Priority queue for Dijkstra's algorithm
+import heapq  
 
 # I created the Graph class to represent flight routes between airports
 class Graph:
@@ -10,7 +10,7 @@ class Graph:
     # The routes dictionary will hold the edges of the graph, where each key is a node (airport) and the value is another dictionary of the neighbors (connected airports) and their respective distances
     def __init__(self):
         # self.routes is an empty dictionary that will hold the edges of the graph
-        self.routes = {}  # Dictionary of airports and their destination connections
+        self.routes = {}  
 
     # I created the add_edge method to add edges (flight routes) to the graph
     def add_edge(self, origin, destination, distance):
@@ -82,7 +82,7 @@ class Graph:
     def shortest_path(self, origin, destination):
         # I created a dictionary called distance to store the shortest distance from the origin to each airport; airport is the key and the value is the distance, float ("inf") is used to initialize the distances to infinity and for airport in self.routes is a loop that iterates through the airports in the routes dictionary
         distances = {airport: float("inf") for airport in self.routes}
-        # previos_nodes is a dictionary to store the previous node for each airport; this means that it will keep track of the previous airport in the shortest path
+        # previous_nodes is a dictionary to store the previous node for each airport; this means that it will keep track of the previous airport in the shortest path
         # This is used to reconstruct the path later
         previous_nodes = {airport: None for airport in self.routes}
         # this line sets the distance from the origin airport to itself to 0, this means that the distance from the origin to itself is 0
@@ -105,7 +105,7 @@ class Graph:
             # This means that for each neighbor airport and its distance, I am iterating through the neighbors of the current airport
             for neighbor, weight in self.routes.get(current_node, {}).items():
                 # I set new_distance equal to the current distance plus the weight of the edge (distance to the neighbor)
-                new_distance = current_distance + weight  # Calculate new distance
+                new_distance = current_distance + weight
                 # this if statement checks if the new distance is less than the current distance for the neighbor airport
                 if new_distance < distances[neighbor]: 
                     # If it is, I set the distance for the neighbor airport to the new distance

@@ -9,9 +9,9 @@ from graph import Graph
 # Description is set equal to a string that describes what the script does
 # This description will be displayed when the user runs the script with the --help flag
 parser = argparse.ArgumentParser(description="Find shortest flight route between two airports.")
-# This first parser.add_argument is for the origin airport code, type=str inidicates that the input should be a string, help provides a short explanation of what this argument is for, and I give an example of a valid input "BWI"; This means the user must supply an airport code like (e.g., BWI) as the first argument
+# This first parser.add_argument is for the origin airport code, type=str inidicates that the input should be a string (help provides a short explanation of what this argument is for) and I give an example of a valid input "BWI"; This means the user must supply an airport code like (e.g., BWI) as the first argument
 parser.add_argument("origin", type=str, help="Origin airport code (e.g., BWI)")
-# This second parser.add_argument is for the destination airport code, type=str indicates that the input should be a string, help provides a short explanation of what this argument is for, and I give an example of a valid input "HOU"; This means the user must supply an airport code like (e.g., HOU) as the second argument
+# This second parser.add_argument is for the destination airport code, type=str indicates that the input should be a string (help provides a short explanation of what this argument is for) and I give an example of a valid input "HOU"; This means the user must supply an airport code like (e.g., HOU) as the second argument
 parser.add_argument("destination", type=str, help="Destination airport code (e.g., HOU)")
 # This optional argument allows the user to specify a different CSV file for the routes; --debug means this is an optional argument, action="store_true" means that if the argument is provided, it will be set to True, and if not, it will be False; Help provides a short explanation of what this argument does
 parser.add_argument("--debug", action="store_true", help="Show route graph data for debugging")
@@ -57,7 +57,7 @@ if args.destination not in all_airports:
 if args.debug:
     # If the user provides the --debug flag when running the script, it will print the loaded routes
     print("\n🔧 DEBUG: Loaded Routes:")
-    # this for loop iterates throuhgh the graph's routes dictionary
+    # this for loop iterates throught the graph's routes dictionary
     # For each origin airport, it prints the destination airports and their respective distances
     # This is useful for verifying that the routes were loaded correctly from the CSV file
     for origin, destinations in graph.routes.items():
