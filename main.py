@@ -1,24 +1,23 @@
 # I start by importing the argparse module, which allows me to handle command-line arguments in a clean and user-friendly way
 import argparse
-# Then, from the graph module, I import the Graph class, which is I define in another file called graph.py
+# Then, from the graph module, I import the Graph class, which I define in another file called graph.py
 # This class will be used to manage the flight routes and perform the shortest path calculations
 from graph import Graph
 
 # Here I created the CLI parser using argparse
-# I set parser equal to argparse.ArgumentParser, which is a built-in Python class that makes it easy to write user-friendly command-line interfaces
-# Description is set equal to a string that describes what the script does
+# I set the variable parser equal to argparse.ArgumentParser, which is a built-in Python class that makes it easy to write user-friendly command-line interfaces
+# description is set equal to a string that describes what the script does
 # This description will be displayed when the user runs the script with the --help flag
 parser = argparse.ArgumentParser(description="Find shortest flight route between two airports.")
-# This first parser.add_argument is for the origin airport code, type=str inidicates that the input should be a string (help provides a short explanation of what this argument is for) and I give an example of a valid input "BWI"; This means the user must supply an airport code like (e.g., BWI) as the first argument
+# This first parser.add_argument is for the origin airport code, type=str inidicates that the input should be a string; help provides a short explanation of what this argument is for, and I give an example of a valid input "BWI"; This means the user must supply an airport code like (e.g., BWI) as the first argument
 parser.add_argument("origin", type=str, help="Origin airport code (e.g., BWI)")
-# This second parser.add_argument is for the destination airport code, type=str indicates that the input should be a string (help provides a short explanation of what this argument is for) and I give an example of a valid input "HOU"; This means the user must supply an airport code like (e.g., HOU) as the second argument
+# This second parser.add_argument is for the destination airport code, type=str indicates that the input should be a string; help provides a short explanation of what this argument is for, and I give an example of a valid input "HOU"; This means the user must supply an airport code like (e.g., HOU) as the second argument
 parser.add_argument("destination", type=str, help="Destination airport code (e.g., HOU)")
-# This optional argument allows the user to specify a different CSV file for the routes; --debug means this is an optional argument, action="store_true" means that if the argument is provided, it will be set to True, and if not, it will be False; Help provides a short explanation of what this argument does
+# This optional parser.argument allows the user to specify a different CSV file for the routes; --debug means this is an optional argument, action="store_true" means that if the argument is provided, it will be set to True, and if not, it will be False; Help provides a short explanation of what this argument does
 parser.add_argument("--debug", action="store_true", help="Show route graph data for debugging")
 
 # I created the variable args and store the parsed arguments in it; this is done by calling parser.parse_args(), which processes the command-line arguments and stores them in the args variable
-# For example, if the user runs `python main.py BWI HOU`, then:
-# args.origin = "BWI" and args.destination = "HOU"
+# For example, if the user runs `python main.py BWI HOU`, then: args.origin = "BWI" and args.destination = "HOU"
 args = parser.parse_args()
 
 # I created an instance of the Graph class
@@ -26,9 +25,9 @@ graph = Graph()
 # Then I load the routes from a CSV file into the graph instance; data/routes.csv is the default file name and path
 graph.load_from_csv("data/routes.csv")
 
-# I created the all_airports variable, which is set to a set of all airport codes in the graph
+# I created the all_airports variable, which is set equal to a set of all airport codes in the graph
 all_airports = set(graph.routes.keys())
-# for in neighbors in graph.routes.values(): is a loop that iterates through the values of the graphs routes dictionary
+# for in neighbors in graph.routes.values(): is a for loop that iterates through the values of the graphs routes dictionary
 # In this case, each value is a dictionary of neighboring airports and their distances
 for neighbors in graph.routes.values():
     # Here I am updating the all_airports set with the keys of the neighbors dictionary
@@ -41,9 +40,9 @@ if args.origin not in all_airports:
     # Then i'm printing an error message if the origin airport code is not found in the all_airports set
     # This message will inform the user that the origin airport code they provided is not valid
     # I use f-string formatting to include the user-input origin airport code in the error message
-    # I also exit the program with a non-zero status code to indicate an error using exit(1) which is a common practice in command-line applications
-    # This indicates that the program encountered an error and did not complete successfully
     print(f"❌ Error: Origin airport code '{args.origin}' not found in the route data.")
+    # I then exit the program with a non-zero status code to indicate an error using exit(1) which is a common practice in command-line applications
+    # This indicates that the program encountered an error and did not complete successfully
     exit(1)
 # This if statement checks if the destination airport code provided by the user is in the all_airports set
 # If the destination airport code is not found, it prints an error message and exits the program
@@ -51,20 +50,21 @@ if args.origin not in all_airports:
 if args.destination not in all_airports:
     # Then again, I am printing an error message if the destination airport code is not found in the all_airports set
     print(f"❌ Error: Destination airport code '{args.destination}' not found in the route data.")
+    # and then exiting the program with a non-zero status code to indicate an error using exit(1)
     exit(1)
 
 # This if statement is optional and is used for debugging purposes
 if args.debug:
     # If the user provides the --debug flag when running the script, it will print the loaded routes
     print("\n🔧 DEBUG: Loaded Routes:")
-    # this for loop iterates throught the graph's routes dictionary
-    # For each origin airport, it prints the destination airports and their respective distances
-    # This is useful for verifying that the routes were loaded correctly from the CSV file
+    # this for loop iterates throught the graph's routes dictionary; This is useful for verifying that the routes were loaded correctly from the CSV file
     for origin, destinations in graph.routes.items():
+        # this line does the same as above, but it iterates through the destinations dictionary 
         for dest, dist in destinations.items():
+            # For each origin airport, it prints the destination airports and their respective distances
             print(f"  {origin} -> {dest} ({dist} miles)")
 
-# I use this print statement to inform the user about the search
+# this print statement will inform the user about the search
 print(f"\n🧭 Searching route from 🛫 {args.origin} to 🛬{args.destination}...\n")
 
 # This line calls the shortest_path method on the graph instance to find the shortest route from the origin to the destination
@@ -74,10 +74,9 @@ print(f"\n🧭 Searching route from 🛫 {args.origin} to 🛬{args.destination}
 cost, path = graph.shortest_path(args.origin, args.destination)
 
 # This if statement checks if the cost is infinite, meaning no route was found
-# If the cost is infinite, it means that there is no valid route between the origin and destination airports
+# If the cost is infinite, it means that there is no valid route between the origin and destination airports; this would happen if the airports are not connected in the graph
 if cost == float("inf"):
-    # In this case, I'm printing a message indicating that no route was found
-    # This message will inform the user that there is no valid route between the specified airports
+    # In this case, I'm printing a message indicating that no route was found; this message will inform the user that there is no valid route between the specified airports
     print("🚫 No route found between the specified airports.")
 else:
     # If a route was found, i'm printing the shortest route and its cost
